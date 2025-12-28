@@ -16,12 +16,11 @@ MODULE friction_module
     REAL (KIND=wp), INTENT(IN) :: dt
 
     ! Local Variables
-    
     REAL (KIND=wp), DIMENSION(:), ALLOCATABLE :: vec_i, vec_j
     REAL (KIND=wp), DIMENSION(:), ALLOCATABLE :: corr_result
     REAL (KIND=wp), DIMENSION(:,:), ALLOCATABLE :: final_results
 
-    INTEGER :: a, I_sol, J_sol, t_lag, step
+    INTEGER :: a, I_sol, J_sol, t_lag, step, idx
     INTEGER(c_int) :: N_c
     REAL (KIND=wp) :: time_val
 
@@ -33,34 +32,48 @@ MODULE friction_module
 
     ! Output Files
     OPEN(UNIT=30, FILE='friction_tensor.dat', status='replace')
-    WRITE(30, '(A)') "#    Time  |      Friction_XX Friction_YY Friction_ZZ"
-          
-    I_sol = 1
-    J_sol = 1
-    
-    ! Create an array to store the diagonal components      
-    ALLOCATE(final_results(n_steps, 3))
 
-    ! Loop on x,y,z
-    DO a = 1, 3
-      ! Extract component 'a' of the force
-      vec_i = force_hist(I_sol, a, :)
-
-      ! Calculate autocorrelation <Fa(0) Fa(t)>
-      CALL compute_correlation_fft(N_c, vec_i, vec_i, corr_result)
-
-      ! Save results
-      final_results(:, a) = corr_result(:)
-    
+    WRITE(30, '(A)', ADVANCE='NO') "#    Time      "
+    DO I_sol = 1, 4
+      WRITE(30, '(3(A,I1), A)', ADVANCE='NO') &
+             "  Sol ", I_sol, "_X    Sol", I_sol, "_Y    Sol", I_sol, "_Z "
     END DO
+    WRITE(30, *) ""
+          
+    ! Create an array to store the diagonal components      
+    ALLOCATE(final_results(n_steps, 12))
+  
+    J_sol = 1    
+    idx = 0
+
+    ! Loop on solute particle
+    DO I_sol = 1, 4
+      ! Loop on x,y,z
+      DO a = 1, 3
+        idx = idx + 1       
+
+        ! Extract component 'a' of the force on particle I
+        vec_i = force_hist(I_sol, a, :)
+
+        ! Calculate autocorrelation <Fa(0) Fa(t)>
+        CALL compute_correlation_fft(N_c, vec_i, vec_i, corr_result)
+
+        ! Save results
+        final_results(:, idx) = corr_result(:)
     
-    ! We only report the first half (N/2) because the FFT is symmetric and the correlation decays
+      END DO
+    END DO
+
+    ! We report the first half only due to FFT symmetry
     DO step = 1, n_steps / 2
       t_lag = step - 1
       time_val = t_lag * dt
-
-      WRITE(30, '(F10.2, 2X, 3(ES14.6, 1X))') &
-                  time_val, final_results(step, 1), final_results(step, 2), final_results(step, 3)
+      
+      WRITE(30, '(F10.4, 2X)', ADVANCE='NO') time_val
+      DO idx = 1, 12
+        WRITE(30, '(ES14.6, 1X)', ADVANCE='NO') final_results(step, idx)
+      END DO
+      WRITE(30, *) ""
     END DO
 
     CLOSE(30)

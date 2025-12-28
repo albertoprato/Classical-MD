@@ -17,6 +17,7 @@ LDFLAGS = -lfftw3 -lm
 SRC = kinds.f90 \
       force_module.f90 \
       fft_correlation_module.f90 \
+      minimization_module.f90 \
       friction_module.f90 \
       main.f90
 
@@ -47,11 +48,14 @@ force_module.o: force_module.f90 kinds.o
 # FFT module (depends on kinds)
 fft_correlation_module.o: fft_correlation_module.f90 kinds.o
 
-# Friction module (depends on kinds and FFT module)
+# Optimization module (depends on kinds and force)
+minimization_module.o: minimization_module.f90 force_module.o kinds.o
+
+# Friction module (depends on kinds and FFT)
 friction_module.o: friction_module.f90 fft_correlation_module.o kinds.o
 
 # Main program (depends on ALL modules)
-main.o: main.f90 force_module.o friction_module.o kinds.o
+main.o: main.f90 force_module.o minimization_module.o friction_module.o kinds.o
 
 # Cleaning rule
 clean:

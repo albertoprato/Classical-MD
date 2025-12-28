@@ -2,6 +2,7 @@ PROGRAM main
   USE kinds, ONLY: wp => dp                                           
   USE force_module
   USE friction_module
+  USE minimization_module
                                                         
   IMPLICIT NONE
 
@@ -32,8 +33,7 @@ PROGRAM main
   READ(10, *) mass_solv, epsilon_ss, sigma_ss
   READ(10, *) epsilon_int, sigma_int
  
-  CLOSE(10)
-  
+  CLOSE(10)  
 
   PRINT *, "=========================================="
   PRINT *, "Molecular Dynamics with Lennard-Jones"
@@ -80,7 +80,16 @@ PROGRAM main
     END IF
   END DO
   CLOSE(11)
-    
+ 
+  PRINT *, "Starting Initial Energy Optimization..."
+  
+  CALL conjugate_gradient_minimize(n_solv, pos_solv, pos_solute, &
+                                   epsilon_ss, sigma_ss, epsilon_int, sigma_int, &
+                                   1.0d-3, 2000)
+  
+  PRINT *, "Optimization Completed."
+  PRINT *, ""  
+  
   PRINT *, "Starting Molecular Dynamics..."
 
   vel_solv = 0.0_wp
