@@ -31,7 +31,7 @@ PROGRAM main
   REAL(KIND=wp) :: e_pot
   CHARACTER(LEN=2) :: atom_label  
   REAL(KIND=wp) :: inp_x, inp_y, inp_z
-  
+
   ! Variables for MSD
   REAL(KIND=wp), DIMENSION(:,:), ALLOCATABLE :: pos_solv0
   REAL(KIND=wp) :: msd, dist_sq_diff, time_val
@@ -52,23 +52,27 @@ PROGRAM main
   PRINT *, "Molecular Dynamics with Lennard-Jones"
   PRINT *, "=========================================="
   PRINT *, ""
-  PRINT *, '(A, I6, A, E12.5)', "Time steps: ", nk, "  dt =", dt
-  PRINT *, '(A, G12.5)', "Solvent mass: ", mass_solv
-  PRINT *, '(A, /, A, G12.5, 3X, A, G12.5)', &
+  PRINT '(A, I6, A, E12.5)', "Time steps: ", nk, "  dt =", dt
+  PRINT '(A, G12.5)', "Solvent mass: ", mass_solv
+  PRINT *, ""
+  PRINT '(A, /, A, G12.5, 3X, A, G12.5)', &
         "LJ (solvent-solvent):", &
         "epsilon = ", epsilon_ss, "sigma = ", sigma_ss
-  PRINT *, '(A, /, A, G12.5, 3X, A, G12.5)', &
+  PRINT *, ""
+  PRINT '(A, /, A, G12.5, 3X, A, G12.5)', &
         "LJ (solute-solvent):", &
         "epsilon = ", epsilon_int, "sigma = ", sigma_int
-  PRINT *, '(A, F10.2, A)', " Simulation Temperature: ", temp, " K"
-  
+  PRINT *, ""
+  PRINT '(A, F10.2, A)', "Simulation Temperature: ", temp, " K"
+  PRINT *, ""
+
   OPEN(UNIT=11, FILE='system.xyz', STATUS='old')
 
   READ(11, *) n_total_atoms
   READ(11, *)
   
   n_solv = n_total_atoms - 4
-
+  
   PRINT *, "System initialized with", n_solv, "solvent particles and", 4, "solute particles"
   PRINT *, ""
  
@@ -119,7 +123,7 @@ PROGRAM main
   pos_solv0 = pos_solv
 
   OPEN(UNIT=40, FILE='equilibration_stats.dat', STATUS='replace')
-  WRITE(40, '(A)') "# Time(ps)       E_pot(LJ)        MSD(A^2)"
+  WRITE(40, '(A)') "# Time       E_pot        MSD"
  
   ! Calculation of the initial forces post-optimization
   CALL force_calculation(n_solv, pos_solv, pos_solute, force, force_solute, &
@@ -152,7 +156,6 @@ PROGRAM main
     END DO
     msd = msd / DBLE(n_solv)
 
-    ! Salviamo ogni 10 step per non creare file enormi
     IF (MOD(step, 10) == 0) THEN
       WRITE(40, '(F12.4, 2X, ES14.6, 2X, ES14.6)') time_val, e_pot, msd
     END IF
@@ -184,8 +187,7 @@ PROGRAM main
     WRITE(20, '(A, 3F15.8)') "O ", pos_solv(i, :)
   END DO
 
-  ! Verlet Algorithm
-  
+  ! Verlet Algorithm 
   DO step = 1, nk
 
     ! Half-kick
@@ -225,7 +227,6 @@ PROGRAM main
       END DO
  
     END IF
-
 
   END DO
 

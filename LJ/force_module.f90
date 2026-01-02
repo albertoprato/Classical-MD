@@ -40,23 +40,25 @@ MODULE force_module
       forces_solute = 0.0_wp
       epot = 0.0_wp
       
-      sigma6 = sigma_ss**6
-      sigma12 = sigma6**2
-      
       ! ===========================     
       ! Solvent-Solvent Interaction
       ! ===========================
+      
+      sigma6 = sigma_ss**6
+      sigma12 = sigma6**2
+      
       DO i = 1, n_solv - 1
         DO k = i + 1, n_solv
-          ! Calculate vector r_i - r_k
+          
           dist_sq = 0.0_wp
           DO dim = 1, 3
             diff(dim) = pos_solv(i, dim) - pos_solv(k, dim)
+            
             dist_sq = dist_sq + diff(dim)**2
           END DO
           
           IF (dist_sq > 1.0e-10_wp) THEN
-            dist = SQRT(dist_sq)
+            
             r_inv = 1.0_wp / dist
             r2_inv = 1.0_wp / dist_sq
             r6_inv = r2_inv**3
@@ -79,33 +81,33 @@ MODULE force_module
         END DO
       END DO             
       
-      sigma6 = sigma_int**6
-      sigma12 = sigma6**2
-      
       ! ===========================
       ! Solute-Solvent Interaction
       ! ===========================
+      
+      sigma6 = sigma_int**6
+      sigma12 = sigma6**2
+
       DO i = 1, n_solv
         DO I_solute = 1, 4
-          ! Calculate vector r_i - R_k
+          
           dist_sq = 0.0_wp
           DO dim = 1, 3
             diff(dim) = pos_solv(i, dim) - pos_solute(I_solute, dim)
+            
             dist_sq = dist_sq + diff(dim)**2
           END DO
           
           IF (dist_sq > 1.0e-10_wp) THEN
-            dist = SQRT(dist_sq)
+            
             r_inv = 1.0_wp / dist
             r2_inv = 1.0_wp / dist_sq
             r6_inv = r2_inv**3
             r12_inv = r6_inv**2
             
-            ! Potential energy
             e_lj = 4.0_wp * epsilon_int * (sigma12 * r12_inv - sigma6 * r6_inv)
             epot = epot + e_lj
             
-            ! Force
             f_lj_factor = 24.0_wp * epsilon_int * r2_inv * (2.0_wp * sigma12 * r12_inv - sigma6 * r6_inv)
             
             DO dim = 1, 3
