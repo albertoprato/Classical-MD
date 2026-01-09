@@ -3,9 +3,8 @@
 ### Contents
 
 1.  [Important Information](#1-important-information)
-2.  [Features](#2-features)
-3.  [Prerequisites](#3-prerequisites)
-4.  [Program guide](#4-program-guide)
+2.  [Prerequisites](#2-prerequisites)
+3.  [Program guide](#3-program-guide)
 
 ---
 
@@ -17,19 +16,7 @@ The goal of this software is to compute the **friction tensor** of the solute as
 
 ---
 
-### 2. Features
-
-* **Force Field**: Lennard-Jones potential with cutoff and Minimum Image Convention.
-    * Solvent-Solvent interactions.
-    * Solute-Solvent interactions.
-* **Integration**: Velocity Verlet algorithm for stable time integration.
-* **Minimization**: Conjugate Gradient (Polak-Ribiere) method to relax the initial solvent structure.
-* **Initialization**: Maxwell velocity distribution
-* **Analysis**: Computation of the friction tensor via Fast Fourier Transforms (FFTW3).
-
----
-
-### 3. Prerequisites
+### 2. Prerequisites
 
 To compile and run this simulation, you need:
 
@@ -39,6 +26,6 @@ To compile and run this simulation, you need:
 
 ---
 
-### 4. Program guide
+### 3. Program guide
 
 To understand how to use this Fortran program, please read the User_Guide.pdf manual located in the doc folder.
