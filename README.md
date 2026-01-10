@@ -1,4 +1,4 @@
-# Classical Molecular Dynamics & Friction Tensor Calculation
+## Classical Molecular Dynamics & Friction Tensor Calculation
 
 ### Contents
 
