@@ -83,13 +83,13 @@ MODULE minimization_module
 
       ! Calculation of new positions with displacement limit
       DO i = 1, n_solv
-        ! Vettore spostamento proposto: alpha * direzione
+        ! Displacement vector proposed: alpha * direction
         disp_vec(:) = alpha * d(i, :)
           
-        ! Calcolo lunghezza spostamento
+        ! Calculate displacement lenght 
         disp_norm = SQRT(SUM(disp_vec**2))
           
-        ! Se lo spostamento è troppo grande, lo ridimensioniamo
+        ! If the displacement is too large, scale it down
         IF (disp_norm > max_disp) THEN
           scale_factor = max_disp / disp_norm
           disp_vec(:) = disp_vec(:) * scale_factor

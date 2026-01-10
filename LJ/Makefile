@@ -29,7 +29,7 @@ all: $(EXEC)
 
 # Final Link (Create executable)
 $(EXEC): $(OBJ)
-	$(FC) $(FFLAGS) -o $@ $^ $(LDFLAGS)
+  $(FC) $(FFLAGS) -o $@ $^ $(LDFLAGS)
 
 # Generic compilation of object files
 %.o: %.f90
@@ -39,7 +39,7 @@ $(EXEC): $(OBJ)
 # Module Dependencies definition
 # ==========================================
 
-# Base module
+# Kinds module
 kinds.o: kinds.f90
 
 # Force module (depends on kinds)
@@ -48,7 +48,7 @@ force_module.o: force_module.f90 kinds.o
 # FFT module (depends on kinds)
 fft_correlation_module.o: fft_correlation_module.f90 kinds.o
 
-# Velocity Inizialitation module (depends on kinds)
+# Velocity inizialitation module (depends on kinds)
 velocity_init_module.o: kinds.o
 
 # Optimization module (depends on kinds and force)

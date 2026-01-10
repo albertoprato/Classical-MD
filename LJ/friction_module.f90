@@ -68,7 +68,7 @@ MODULE friction_module
         ! Extract component 'a' of the force on particle I
         vec_i = force_hist(I_sol, a, :)
 
-        ! Calculate autocorrelation <Fa(0) Fa(t)>
+        ! Calculate autocorrelation
         CALL compute_correlation_fft(N_c, vec_i, vec_i, corr_result)
 
         ! Save results

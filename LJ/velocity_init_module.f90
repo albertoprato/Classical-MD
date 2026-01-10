@@ -47,30 +47,30 @@ MODULE velocity_init_module
 
     ! Assign random velocities (Box-Muller transform)
     DO i = 1, n_solv
-       DO k = 1, 3
-          CALL RANDOM_NUMBER(r1)    ! Generates a uniform number between 0 and 1
-          CALL RANDOM_NUMBER(r2)    ! Generates a uniform number between 0 and 1
+      DO k = 1, 3
+        CALL RANDOM_NUMBER(r1)    ! Generates a uniform number between 0 and 1
+        CALL RANDOM_NUMBER(r2)    ! Generates a uniform number between 0 and 1
           
-          ! Gaussian number with mean 0 and std dev sigma_v
-          vel_solv(i, k) = sigma_v * SQRT(-2.0_wp * LOG(r1)) * COS(2.0_wp * pi * r2)
-       END DO
+        ! Gaussian number with mean 0 and std dev sigma_v
+        vel_solv(i, k) = sigma_v * SQRT(-2.0_wp * LOG(r1)) * COS(2.0_wp * pi * r2)
+      END DO
     END DO
 
     ! Remove Center of Mass Drift
     v_cm = 0.0_wp
     DO i = 1, n_solv
-       v_cm(:) = v_cm(:) + vel_solv(i, :)     ! Vector sum of all velocities
+      v_cm(:) = v_cm(:) + vel_solv(i, :)     ! Vector sum of all velocities
     END DO
     v_cm = v_cm / DBLE(n_solv)    ! Average system velocity
 
     DO i = 1, n_solv
-       vel_solv(i, :) = vel_solv(i, :) - v_cm(:)    ! Subtraction 
+      vel_solv(i, :) = vel_solv(i, :) - v_cm(:)    ! Subtraction 
     END DO
 
     ! Scale to exact Temperature
     kin_en = 0.0_wp
     DO i = 1, n_solv
-       kin_en = kin_en + SUM(vel_solv(i, :)**2)
+      kin_en = kin_en + SUM(vel_solv(i, :)**2)
     END DO
     kin_en = 0.5_wp * mass * kin_en
 

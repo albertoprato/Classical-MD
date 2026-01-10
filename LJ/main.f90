@@ -61,7 +61,7 @@ PROGRAM main
   INTEGER :: k
 
   ! Read Input
-  OPEN(UNIT=10, FILE='input.txt', STATUS='old')
+  OPEN(UNIT=10, FILE='input/input.txt', STATUS='old')
   
   READ(10, *) nk, dt
   READ(10, *) mass_solv, epsilon_ss, sigma_ss
@@ -91,7 +91,7 @@ PROGRAM main
   PRINT '(A, F10.2, A)', "Simulation Temperature: ", temp, " K"
   PRINT *, ""
 
-  OPEN(UNIT=11, FILE='system.xyz', STATUS='old')
+  OPEN(UNIT=11, FILE='input/system.xyz', STATUS='old')
 
   READ(11, *) n_total_atoms
   READ(11, *)
